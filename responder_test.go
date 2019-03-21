@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/aghape/responder"
+	"github.com/ecletus/responder"
 )
 
 func checkRespond(request *http.Request, format string, t *testing.T) {

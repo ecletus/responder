@@ -1,6 +1,6 @@
 // Package responder respond differently according to request's accepted mime type
 //
-// Github: http://github.com/aghape/responder
+// Github: http://github.com/ecletus/responder
 package responder
 
 import (
