@@ -29,6 +29,7 @@ func init() {
 // Responder is holder of registed response handlers, response `Request` based on its accepted mime type
 type Responder struct {
 	responds         map[string]func()
+	xaccept          bool
 	DefaultResponder func()
 }
 
@@ -41,6 +42,11 @@ type Responder struct {
 func With(formats interface{}, fc func()) *Responder {
 	rep := &Responder{responds: map[string]func(){}}
 	return rep.With(formats, fc)
+}
+
+func (rep *Responder) XAccept() *Responder {
+	rep.xaccept = true
+	return rep
 }
 
 // With could be used to register response handler for mime type formats, the formats could be string or []string
@@ -66,6 +72,16 @@ func (rep *Responder) Respond(request *http.Request) {
 		if respond, ok := rep.responds[strings.TrimPrefix(ext, ".")]; ok {
 			respond()
 			return
+		}
+	}
+
+	if rep.xaccept {
+		// get request format from Accept
+		for _, ext := range strings.Split(request.Header.Get("X-Accept"), ",") {
+			if respond, ok := rep.responds[strings.TrimPrefix(ext, ".")]; ok {
+				respond()
+				return
+			}
 		}
 	}
 
